@@ -1,6 +1,6 @@
 ```mermaid
 ---
-title: New note diagram
+title: Single_page_app_diagram
 ---
 sequenceDiagram
     participant browser
@@ -8,16 +8,15 @@ sequenceDiagram
 
     browser->>server: GET https://studies.cs.helsinki.fi/exampleapp/spa
     activate server
-    server-->>browser: HTML document
+    server-->>browser: 302 Found
     deactivate server
 
-    browser->>server: GET https://studies.cs.helsinki.fi/exampleapp/main.css
+    browser->>server: GET https://studies.cs.helsinki.fi/exampleapp/notes
     activate server
     server-->>browser: the css file
     deactivate server
-    
 
-    browser->>server: GET https://studies.cs.helsinki.fi/exampleapp/spa.js
+    browser->>server: GET https://studies.cs.helsinki.fi/exampleapp/main.js
     activate server
     server-->>browser: the JavaScript file
     deactivate server
@@ -29,5 +28,5 @@ sequenceDiagram
     server-->>browser: [{ "content": "HTML is easy", "date": "2023-1-1" }, ... ]
     deactivate server
 
-    Note right of browser: The browser executes the callback function that renders the notes.
+    Note right of browser: The browser executes the callback function that renders the notes
 ```

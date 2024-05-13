@@ -1,6 +1,6 @@
 ```mermaid
 ---
-title: New note diagram
+title: New_note_in_Single_page_app_diagram
 ---
 sequenceDiagram
     participant browser
