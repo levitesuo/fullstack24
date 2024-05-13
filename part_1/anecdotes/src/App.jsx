@@ -37,9 +37,6 @@ const App = () => {
   const random_limit_len = () => Math.floor(Math.random() * anecdotes.length)
   const popularIndex = () => votes.indexOf(Math.max.apply(null, votes))
 
-  console.log(selected)
-  console.log(votes)
-  console.log(popularIndex())
   return (
     <div>
       <Header text="Anecdote of the day" />
