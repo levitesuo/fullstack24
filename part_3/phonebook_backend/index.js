@@ -1,5 +1,6 @@
 const express = require("express");
 const app = express();
+const morgan = require("morgan");
 
 let persons = [
   {
@@ -24,7 +25,24 @@ let persons = [
   },
 ];
 
+morgan.token("reqContent", (req) => JSON.stringify(req.body));
+
 app.use(express.json());
+
+app.use(
+  morgan("tiny", {
+    skip: (req) => req.method === "POST",
+  }),
+);
+
+app.use(
+  morgan(
+    ":method :url :req[Content-Length] :status - :total-time ms :reqContent",
+    {
+      skip: (req) => req.method !== "POST",
+    },
+  ),
+);
 
 app.get("/api/persons", (request, response) => {
   response.json(persons);
@@ -42,10 +60,32 @@ app.get("/api/persons/:id", (request, response) => {
 
 app.delete("/api/persons/:id", (request, response) => {
   const id = request.params.id;
-  persons = persons.filter((person) => {
-    person.id !== id;
-  });
+  persons = persons.filter((person) => person.id !== id);
   response.status(204).end();
+});
+
+app.post("/api/persons/", (request, response) => {
+  const body = request.body;
+  if (!body.name) {
+    return response.status(400).json({
+      error: "The name is missing",
+    });
+  } else if (!body.number) {
+    return response.status(400).json({
+      error: "The phonenumber is missing.",
+    });
+  } else if (persons.find((item) => item.name === body.name)) {
+    return response.status(400).json({
+      error: "The person is alredy in the phonebook",
+    });
+  }
+  const person = {
+    id: Math.random().toString(),
+    name: body.name,
+    number: body.number,
+  };
+  persons = persons.concat(person);
+  response.json(person);
 });
 
 app.get("/info", (request, response) => {
