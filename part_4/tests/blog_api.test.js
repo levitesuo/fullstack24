@@ -38,9 +38,9 @@ test('api return blog objects with key id', async () => {
 })
 
 test('POST request to blogs api adds a blog to the list', async () => {
-    const blog = new Blog({'title': 'test blog', 'author': 'Leevi', 'likes':0, 'url': 'google.com'})
+    const blog = {'title': 'test blog', 'author': 'Leevi', 'likes':0, 'url': 'google.com'}
 
-    await blog.save()
+    await api.post('/api/blogs').send(blog)
 
     const blogs = await api.get('/api/blogs')
     assert(blogs.body.length > initialBlogs.length)
@@ -72,8 +72,43 @@ test('POST no title gets bad request response', async () => {
     const response = await api.post('/api/blogs').send(blog)
 
     assert(response.badRequest)
+    assert.strictEqual(400, response.status)
 })
 
+test('DELETE request works when its blog thats delted exsists', async () => {
+    const getResponse = await api.get('/api/blogs')
+    const blogs = getResponse.body
+
+    const id = blogs[0].id
+
+    const deleteResponse = await api.delete('/api/blogs/' + id)
+
+    assert.strictEqual(204, deleteResponse.status)
+})
+
+test('PUT request works when its supposed to', async () => {
+    const blog = {'title': 'test blog', 'author': 'Leevi', 'likes':0, 'url': 'google.com'}
+
+    const postResult = await api.post('/api/blogs').send(blog)
+    const id  = postResult.body.id
+
+
+    const blogUpdates = {
+        'author': 'myy'
+    }
+    const putResult = await api.put('/api/blogs/'+id).send(blogUpdates)
+    const resultBlog = putResult.body
+
+    const expectedBlog = {
+        'author': 'myy',
+        'title': 'test blog',
+        'likes': 0,
+        'url': 'google.com',
+        'id': id
+    }
+
+    assert.deepStrictEqual(expectedBlog, resultBlog)
+})
 
 after(async () => {
   await mongoose.connection.close()
