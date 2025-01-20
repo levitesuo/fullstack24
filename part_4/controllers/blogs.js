@@ -1,12 +1,21 @@
 const blogsRouter = require("express").Router()
 const { request, response } = require("../app")
 const mongoose = require('mongoose')
+const jwt = require('jsonwebtoken')
 
 const Blog = require("../models/blog")
 const User = require('../models/user')
 
+const getTokenFrom = request => {
+  const authorization = request.get('authorization')
+  if (authorization && authorization.startsWith('Bearer ')) {
+    return authorization.replace('Bearer ', '')
+  }
+  return null
+}
+
 blogsRouter.get("/", async (request, response) => {
-  const blogs = await Blog.find({})
+  const blogs = await Blog.find({}).populate('user')
   response.json(blogs)
 });
 
@@ -46,7 +55,7 @@ blogsRouter.delete('/:id', async (request, response) => {
 
 blogsRouter.get('/:id', async (request, response) => {
   const id = request.params.id
-  const result = await Blog.find({_id: id})
+  const result = await Blog.find({_id: id}).populate('user')
 
   response.json(result)
 })
