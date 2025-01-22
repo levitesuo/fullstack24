@@ -25,16 +25,16 @@ const Blog = ({ blog,likeHandler,handleDelete }) => {
     blog.likes = likes
   }
 
-  const DeleteButton = ({handleDelete}) => {
+  const DeleteButton = ({ handleDelete }) => {
     const loggedUser = JSON.parse(window.localStorage.getItem('loggedBlogsappUser'))
     const isAuthor = blog.user?.username === loggedUser.username
     return (
-      <button 
-      style={{ display: isAuthor ? '' : 'none' }} 
-      onClick={() => handleDelete(blog.id)} 
-    >
+      <button
+        style={{ display: isAuthor ? '' : 'none' }}
+        onClick={() => handleDelete(blog.id)}
+      >
       remove
-    </button>
+      </button>
     )
   }
 
@@ -43,14 +43,14 @@ const Blog = ({ blog,likeHandler,handleDelete }) => {
       <div  style={hideWhenVisible}>
         {blog.title} {blog.author}
         <button onClick={toggleInfo}>info</button>
-      </div>  
+      </div>
       <div style={showWhenVisible}>
         {blog.title} <button onClick={toggleInfo}>close</button>
         <ul>
           <li>author: {blog.author}</li>
           <li>url: {blog.url}</li>
           <li>
-            likes: {likes} 
+            likes: {likes}
             <button onClick={handleLike}>Like</button>
           </li>
           <li>user: {blog.user === undefined ? '---' : blog.user.username}</li>

@@ -9,11 +9,11 @@ const getAll = () => {
 const newBlog = async content => {
 
   const request = await axios.post(
-    baseUrl, 
-    content, 
+    baseUrl,
+    content,
     {
-      headers: 
-      {Authorization: 'Bearer ' + JSON.parse(window.localStorage.getItem('loggedBlogsappUser')).token }
+      headers:
+      { Authorization: 'Bearer ' + JSON.parse(window.localStorage.getItem('loggedBlogsappUser')).token }
     }
   )
   return request.data
@@ -22,7 +22,7 @@ const newBlog = async content => {
 const updateLikes = async (id, likes) => {
   const request = await axios.put(
     baseUrl+'/'+id,
-    {likes}
+    { likes }
   )
   return request.data
 }

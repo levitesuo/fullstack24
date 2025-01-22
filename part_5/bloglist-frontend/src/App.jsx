@@ -12,22 +12,22 @@ const App = () => {
   const [password, setPassword] = useState('')
   const [user, setUser] = useState(null)
 
-  const [notification, setNotification] = useState({message:null, color:null})
+  const [notification, setNotification] = useState({ message:null, color:null })
 
   const notifyError = message => {
-    setNotification({message, color:'red'})
-    setTimeout(() => setNotification({message:null, color:null}), 5000)
+    setNotification({ message, color:'red' })
+    setTimeout(() => setNotification({ message:null, color:null }), 5000)
   }
 
   const notify = message => {
-    setNotification({message, color:'green'})
-    setTimeout(() => setNotification({message:null, color:null}), 5000)
+    setNotification({ message, color:'green' })
+    setTimeout(() => setNotification({ message:null, color:null }), 5000)
   }
 
   useEffect(() => {
     blogService.getAll().then(savedBlogs =>
       setBlogs( savedBlogs.sort((a, b) => b.likes - a.likes) )
-    )  
+    )
   }, [setBlogs])
 
   useEffect(() => {
@@ -49,7 +49,7 @@ const App = () => {
   }
   const handleLogin = async (event) => {
     event.preventDefault()
-    
+
     try {
       const user = await loginService.login({
         username, password,
@@ -80,7 +80,7 @@ const App = () => {
     <form onSubmit={handleLogin}>
       <div>
         username
-          <input
+        <input
           type="text"
           value={username}
           name="Username"
@@ -89,7 +89,7 @@ const App = () => {
       </div>
       <div>
         password
-          <input
+        <input
           type="password"
           value={password}
           name="Password"
@@ -97,7 +97,7 @@ const App = () => {
         />
       </div>
       <button type="submit">login</button>
-    </form>      
+    </form>
   )
 
   const logoutButton = () => (
@@ -116,16 +116,16 @@ const App = () => {
       )
     } else {
       return (
-      <div>
-        <h1>blogs</h1>
-        {logoutButton()}
-        <h1>create new</h1>
-        <NewBlogForm newBlog={handleNewBlog}/>
-        {blogs.map(blog =>
-          <Blog key={blog.id} blog={blog} likeHandler={handleLike} handleDelete={handleDelete}/>
-        )}
-      </div>
-    )}                           
+        <div>
+          <h1>blogs</h1>
+          {logoutButton()}
+          <h1>create new</h1>
+          <NewBlogForm newBlog={handleNewBlog}/>
+          {blogs.map(blog =>
+            <Blog key={blog.id} blog={blog} likeHandler={handleLike} handleDelete={handleDelete}/>
+          )}
+        </div>
+      )}
   }
 
   return (
