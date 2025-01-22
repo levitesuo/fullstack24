@@ -2,8 +2,9 @@ import { useState, useEffect } from 'react'
 import Blog from './components/Blog'
 import blogService from './services/blogs'
 import loginService from './services/login'
-import Notification from './components/notification'
-import NewBlogForm from './components/newBlogForm'
+import LogInForm from './components/LogInForm'
+import Notification from './components/Notification'
+import NewBlogForm from './components/NewBlogForm'
 import './index.css'
 
 const App = () => {
@@ -38,35 +39,42 @@ const App = () => {
     }
   }, [setUser])
 
-  const handleNewBlog = (blog) => {
+  const handleNewBlog = async (blog) => {
     blogService.newBlog(blog)
-    setBlogs(blogs.concat(blog).sort((a, b) => b.likes - a.likes))
+    const newBlog = {
+      author: blog.author,
+      title: blog.title,
+      url: blog.url,
+      user: {
+        username: user.username
+      }
+    }
+    setBlogs(blogs.concat(newBlog).sort((a, b) => b.likes - a.likes))
   }
 
   const handleDelete = (id) => {
     setBlogs(blogs.filter((blog) => blog.id !== id))
     blogService.deleteBlog(id)
   }
-  const handleLogin = async (event) => {
-    event.preventDefault()
 
-    try {
-      const user = await loginService.login({
-        username, password,
-      })
-      window.localStorage.setItem(
-        'loggedBlogsappUser', JSON.stringify(user)
-      )
-      setUser(user)
-      setUsername('')
-      setPassword('')
-      notify(user.name + ' successfully logged in')
-    } catch (exception) {
-      notifyError('Incerrect username or password')
-    }
+  const handleLike = (id, likes) => {
+    blogService.updateLikes(id, likes)
+    const bbolgs = blogs.map(blog => {
+      if (blog.id === id) {
+        return {
+          id: blog.id,
+          author: blog.author,
+          title: blog.title,
+          url: blog.url,
+          user: blog.user,
+          likes: likes
+        }} else {
+        return blog
+      }
+    })
+    console.log(bbolgs.map(blog => blog.title))
+    setBlogs(bbolgs.sort((a, b) => b.likes - a.likes))
   }
-
-  const handleLike = blogService.updateLikes
 
   const handleLogout = () => {
     window.localStorage.removeItem('loggedBlogsappUser')
@@ -75,30 +83,6 @@ const App = () => {
     setPassword('')
     notify('logged out')
   }
-
-  const loginForm = () => (
-    <form onSubmit={handleLogin}>
-      <div>
-        username
-        <input
-          type="text"
-          value={username}
-          name="Username"
-          onChange={({ target }) => setUsername(target.value)}
-        />
-      </div>
-      <div>
-        password
-        <input
-          type="password"
-          value={password}
-          name="Password"
-          onChange={({ target }) => setPassword(target.value)}
-        />
-      </div>
-      <button type="submit">login</button>
-    </form>
-  )
 
   const logoutButton = () => (
     <div>
@@ -111,7 +95,7 @@ const App = () => {
       return (
         <div>
           <h1>Login to blogsapp</h1>
-          {loginForm()}
+          <LogInForm requestHandler={loginService.login} notify={notify} notifyError={notifyError} setUser={setUser} />
         </div>
       )
     } else {

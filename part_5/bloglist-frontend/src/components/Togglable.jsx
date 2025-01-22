@@ -11,7 +11,7 @@ const Togglable = (props) => {
     setVisible(!visible)
   }
 
-  Togglable.PropTypes = {
+  Togglable.propTypes = {
     buttonLable: PropTypes.string.isRequired
   }
 

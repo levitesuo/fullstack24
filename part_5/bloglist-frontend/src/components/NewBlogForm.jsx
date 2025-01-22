@@ -1,5 +1,5 @@
 import { useState } from 'react'
-import Togglable from './togglable'
+import Togglable from './Togglable'
 
 const NewBlogForm = ({ newBlog }) => {
   const [title, setTitle] = useState('')

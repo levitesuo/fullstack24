@@ -20,14 +20,13 @@ const Blog = ({ blog,likeHandler,handleDelete }) => {
   }
 
   const handleLike = () => {
-    setLikes(likes+1)
-    likeHandler(blog.id, likes+1)
-    blog.likes = likes
+    setLikes(likes + 1)
+    likeHandler(blog.id, likes + 1)
   }
 
   const DeleteButton = ({ handleDelete }) => {
     const loggedUser = JSON.parse(window.localStorage.getItem('loggedBlogsappUser'))
-    const isAuthor = blog.user?.username === loggedUser.username
+    const isAuthor = blog.user?.username === loggedUser?.username
     return (
       <button
         style={{ display: isAuthor ? '' : 'none' }}
@@ -39,23 +38,25 @@ const Blog = ({ blog,likeHandler,handleDelete }) => {
   }
 
   return (
-    <div style={blogStyle}>
-      <div  style={hideWhenVisible}>
-        {blog.title} {blog.author}
-        <button onClick={toggleInfo}>info</button>
-      </div>
-      <div style={showWhenVisible}>
-        {blog.title} <button onClick={toggleInfo}>close</button>
-        <ul>
-          <li>author: {blog.author}</li>
-          <li>url: {blog.url}</li>
-          <li>
-            likes: {likes}
-            <button onClick={handleLike}>Like</button>
-          </li>
-          <li>user: {blog.user === undefined ? '---' : blog.user.username}</li>
-        </ul>
-        <DeleteButton handleDelete={handleDelete}/>
+    <div className='blog'>
+      <div style={blogStyle} >
+        <div  style={hideWhenVisible}>
+          {blog.title} {blog.author}
+          <button onClick={toggleInfo}>info</button>
+        </div>
+        <div style={showWhenVisible} className='togglableContent'>
+          {blog.title} <button onClick={toggleInfo}>close</button>
+          <ul>
+            <li>author: {blog.author}</li>
+            <li>url: {blog.url}</li>
+            <li>
+              likes: {likes}
+              <button onClick={handleLike} data-testid={'like ' + blog.title}>Like</button>
+            </li>
+            <li>user: {blog.user === undefined ? '---' : blog.user.username}</li>
+          </ul>
+          <DeleteButton handleDelete={handleDelete}/>
+        </div>
       </div>
     </div>
   )
