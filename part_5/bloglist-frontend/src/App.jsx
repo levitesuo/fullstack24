@@ -38,6 +38,15 @@ const App = () => {
     }
   }, [setUser])
 
+  const handleNewBlog = (blog) => {
+    blogService.newBlog(blog)
+    setBlogs(blogs.concat(blog).sort((a, b) => b.likes - a.likes))
+  }
+
+  const handleDelete = (id) => {
+    setBlogs(blogs.filter((blog) => blog.id !== id))
+    blogService.deleteBlog(id)
+  }
   const handleLogin = async (event) => {
     event.preventDefault()
     
@@ -111,9 +120,9 @@ const App = () => {
         <h1>blogs</h1>
         {logoutButton()}
         <h1>create new</h1>
-        <NewBlogForm newBlog={blogService.newBlog}/>
+        <NewBlogForm newBlog={handleNewBlog}/>
         {blogs.map(blog =>
-          <Blog key={blog.id} blog={blog} likeHandler={handleLike} />
+          <Blog key={blog.id} blog={blog} likeHandler={handleLike} handleDelete={handleDelete}/>
         )}
       </div>
     )}                           

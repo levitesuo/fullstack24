@@ -1,6 +1,6 @@
 import { useEffect, useState } from 'react'
 
-const Blog = ({ blog,likeHandler }) => {
+const Blog = ({ blog,likeHandler,handleDelete }) => {
   const [infoVisible, setInfoVisible] = useState(false)
   const [likes, setLikes] = useState(blog.likes ? blog.likes : 0)
 
@@ -20,9 +20,22 @@ const Blog = ({ blog,likeHandler }) => {
   }
 
   const handleLike = () => {
-    likeHandler(blog.id, blog.likes+1)
-    blog.likes++
     setLikes(likes+1)
+    likeHandler(blog.id, likes+1)
+    blog.likes = likes
+  }
+
+  const DeleteButton = ({handleDelete}) => {
+    const loggedUser = JSON.parse(window.localStorage.getItem('loggedBlogsappUser'))
+    const isAuthor = blog.user?.username === loggedUser.username
+    return (
+      <button 
+      style={{ display: isAuthor ? '' : 'none' }} 
+      onClick={() => handleDelete(blog.id)} 
+    >
+      remove
+    </button>
+    )
   }
 
   return (
@@ -42,6 +55,7 @@ const Blog = ({ blog,likeHandler }) => {
           </li>
           <li>user: {blog.user === undefined ? '---' : blog.user.username}</li>
         </ul>
+        <DeleteButton handleDelete={handleDelete}/>
       </div>
     </div>
   )
