@@ -9,8 +9,6 @@ import './index.css'
 
 const App = () => {
   const [blogs, setBlogs] = useState([])
-  const [username, setUsername] = useState('')
-  const [password, setPassword] = useState('')
   const [user, setUser] = useState(null)
 
   const [notification, setNotification] = useState({ message:null, color:null })
@@ -27,9 +25,10 @@ const App = () => {
 
   useEffect(() => {
     blogService.getAll().then(savedBlogs =>
-      setBlogs( savedBlogs.sort((a, b) => b.likes - a.likes) )
-    )
-  }, [setBlogs])
+      setBlogs(savedBlogs.sort((a, b) => b.likes - a.likes)
+        .map(({likes, ...rest}) => ({ likes: likes ? likes : 0 , ...rest}))
+      ))}
+  , [setBlogs])
 
   useEffect(() => {
     const loggedUserJSON = window.localStorage.getItem('loggedBlogsappUser')
@@ -40,11 +39,13 @@ const App = () => {
   }, [setUser])
 
   const handleNewBlog = async (blog) => {
-    blogService.newBlog(blog)
+    const response = await blogService.newBlog(blog)
     const newBlog = {
-      author: blog.author,
-      title: blog.title,
-      url: blog.url,
+      author: response.author,
+      title: response.title,
+      url: response.url,
+      likes: 0,
+      id: response.id,
       user: {
         username: user.username
       }
@@ -57,8 +58,10 @@ const App = () => {
     blogService.deleteBlog(id)
   }
 
-  const handleLike = (id, likes) => {
-    blogService.updateLikes(id, likes)
+  const handleLike = async (blog) => {
+    const id = blog.id
+    const likes = blog.likes ? blog.likes + 1 : 1
+    await blogService.updateLikes(id, likes)
     const bbolgs = blogs.map(blog => {
       if (blog.id === id) {
         return {
@@ -72,15 +75,12 @@ const App = () => {
         return blog
       }
     })
-    console.log(bbolgs.map(blog => blog.title))
     setBlogs(bbolgs.sort((a, b) => b.likes - a.likes))
   }
 
   const handleLogout = () => {
     window.localStorage.removeItem('loggedBlogsappUser')
     setUser(null)
-    setUsername('')
-    setPassword('')
     notify('logged out')
   }
 

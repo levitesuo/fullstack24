@@ -2,7 +2,6 @@ import { useEffect, useState } from 'react'
 
 const Blog = ({ blog,likeHandler,handleDelete }) => {
   const [infoVisible, setInfoVisible] = useState(false)
-  const [likes, setLikes] = useState(blog.likes ? blog.likes : 0)
 
   const hideWhenVisible = { display: infoVisible ? 'none' : '' }
   const showWhenVisible = { display: infoVisible ? '' : 'none' }
@@ -20,8 +19,7 @@ const Blog = ({ blog,likeHandler,handleDelete }) => {
   }
 
   const handleLike = () => {
-    setLikes(likes + 1)
-    likeHandler(blog.id, likes + 1)
+    likeHandler(blog)
   }
 
   const DeleteButton = ({ handleDelete }) => {
@@ -42,15 +40,15 @@ const Blog = ({ blog,likeHandler,handleDelete }) => {
       <div style={blogStyle} >
         <div  style={hideWhenVisible}>
           {blog.title} {blog.author}
-          <button onClick={toggleInfo}>info</button>
+          <button onClick={toggleInfo} data-testid={'info '+blog.title}>info</button>
         </div>
-        <div style={showWhenVisible} className='togglableContent'>
+        <div style={showWhenVisible} className='togglableContent' data-testid='togglableContent'>
           {blog.title} <button onClick={toggleInfo}>close</button>
           <ul>
             <li>author: {blog.author}</li>
             <li>url: {blog.url}</li>
             <li>
-              likes: {likes}
+              likes: {blog.likes}
               <button onClick={handleLike} data-testid={'like ' + blog.title}>Like</button>
             </li>
             <li>user: {blog.user === undefined ? '---' : blog.user.username}</li>

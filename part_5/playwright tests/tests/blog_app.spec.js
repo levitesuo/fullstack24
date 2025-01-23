@@ -115,11 +115,9 @@ describe('Blog app', () => {
                 
             })
             test('the order is correct with 1, 2, 3 likes', async ({ page }) => {
-                const showButtons = await page.getByText('info').all()
-
-                await showButtons[0].click()
-                await showButtons[1].click()
-                await showButtons[2].click()
+                await page.getByTestId('info a').click()
+                await page.getByTestId('info b').click()
+                await page.getByTestId('info c').click()
 
                 await likeTitle(page, 'a')
                 await likeTitle(page, 'b')
@@ -129,8 +127,49 @@ describe('Blog app', () => {
                 await likeTitle(page, 'c')
 
                 
-                const likeButtons = page.getByTestId(new RegExp('like ', "i"))
-                console.log(likeButtons[0])
+                const stuff = await page.getByTestId('togglableContent').all()
+                console.log(stuff)
+                await expect(stuff[0]).toContainText('c')
+                await expect(stuff[1]).toContainText('b')
+                await expect(stuff[2]).toContainText('a')
+
+            })
+            test('the order is correct with 2, 2, 2 likes', async ({ page }) => {
+                await page.getByTestId('info a').click()
+                await page.getByTestId('info b').click()
+                await page.getByTestId('info c').click()
+
+                await likeTitle(page, 'a')
+                await likeTitle(page, 'a')
+                await likeTitle(page, 'b')
+                await likeTitle(page, 'b')
+                await likeTitle(page, 'c')
+                await likeTitle(page, 'c')
+
+                
+                const stuff = await page.getByTestId('togglableContent').all()
+                console.log(stuff)
+                await expect(stuff[0]).toContainText('a')
+                await expect(stuff[1]).toContainText('b')
+                await expect(stuff[2]).toContainText('c')
+
+            })
+            test('the order is correct with 0, 0, 3 likes', async ({ page }) => {
+                await page.getByTestId('info a').click()
+                await page.getByTestId('info b').click()
+                await page.getByTestId('info c').click()
+
+
+                await likeTitle(page, 'c')
+                await likeTitle(page, 'c')
+                await likeTitle(page, 'c')
+
+                
+                const stuff = await page.getByTestId('togglableContent').all()
+                console.log(stuff)
+                await expect(stuff[0]).toContainText('c')
+                await expect(stuff[1]).toContainText('a')
+                await expect(stuff[2]).toContainText('b')
 
             })
         })
